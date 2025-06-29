@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Soul Persona - 당신의 디지털 영혼 동물을 찾아보세요</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .screen {
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.95;
+            font-style: italic;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 18px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .visual-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            padding: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .result-card {
+            text-align: center;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            60% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-emoji {
+            font-size: 120px;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .result-title {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-description {
+            font-size: 1.15em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .trait {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.95em;
+        }
+
+        .share-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question {
+                font-size: 1.15em;
+            }
+
+            .result-emoji {
+                font-size: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 시작 화면 -->
+        <div id="start-screen" class="screen active">
+            <div class="header">
+                <h1>Digital Soul Persona</h1>
+                <p class="subtitle">당신의 디지털 영혼 동물을 찾아보세요</p>
+            </div>
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="font-size: 80px; animation: float 3s ease-in-out infinite;">🌟</div>
+                <p style="margin: 20px 0; line-height: 1.6;">
+                    2025년, AI가 당신의 디지털 영혼을 읽어드립니다.<br>
+                    가상 세계에서 당신은 어떤 동물로 존재할까요?
+                </p>
+            </div>
+            <button class="btn" onclick="startQuiz()">영혼 탐색 시작하기</button>
+        </div>
+
+        <!-- 질문 화면들 -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+            <div id="question-container"></div>
+        </div>
+
+        <!-- 로딩 화면 -->
+        <div id="loading-screen" class="screen">
+            <div class="loading">
+                <div class="spinner"></div>
+                <h2>AI가 당신의 디지털 영혼을 분석중...</h2>
+                <p style="margin-top: 15px; opacity: 0.8;">잠시만 기다려주세요</p>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="result-screen" class="screen">
+            <div class="result-card">
+                <div id="result-emoji" class="result-emoji"></div>
+                <h2 id="result-title" class="result-title"></h2>
+                <p id="result-description" class="result-description"></p>
+                <div id="result-traits" class="traits"></div>
+                <div class="share-section">
+                    <p style="margin-bottom: 15px;">결과를 공유하고 친구들의 디지털 영혼도 확인해보세요!</p>
+                    <button class="share-btn" onclick="shareResult()">📱 공유하기</button>
+                    <button class="share-btn" onclick="retakeQuiz()">🔄 다시하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 질문 데이터
+        const questions = [
+            {
+                type: 'story',
+                story: '당신은 막 가상현실 헤드셋을 착용했습니다. 눈앞에 광활한 디지털 세계가 펼쳐집니다.',
+                question: '가장 먼저 어디로 가고 싶나요?',
+                options: [
+                    { text: '네온빛이 빛나는 사이버 도시', value: 'cyber' },
+                    { text: '픽셀로 이루어진 평화로운 숲', value: 'nature' },
+                    { text: '무중력 우주 정거장', value: 'space' },
+                    { text: '고대 디지털 도서관', value: 'wisdom' }
+                ]
+            },
+            {
+                type: 'visual',
+                question: '다음 중 가장 끌리는 이모지는?',
+                options: [
+                    { text: '⚡', value: 'energy' },
+                    { text: '🌊', value: 'flow' },
+                    { text: '🔮', value: 'mystic' },
+                    { text: '🎭', value: 'creative' }
+                ]
+            },
+            {
+                type: 'story',
+                story: '디지털 세계에서 다른 사용자를 만났습니다.',
+                question: '어떻게 인사하시겠어요?',
+                options: [
+                    { text: '화려한 이펙트와 함께 등장', value: 'dramatic' },
+                    { text: '따뜻한 빛을 발산하며 다가가기', value: 'warm' },
+                    { text: '홀로그램 명함 전송', value: 'professional' },
+                    { text: '재미있는 밈으로 대화 시작', value: 'playful' }
+                ]
+            },
+            {
+                type: 'choice',
+                question: 'SNS에서 당신의 포스팅 스타일은?',
+                options: [
+                    { text: '영감을 주는 글과 사진', value: 'inspirational' },
+                    { text: '일상의 소소한 순간들', value: 'authentic' },
+                    { text: '최신 트렌드와 핫이슈', value: 'trendy' },
+                    { text: '깊이 있는 생각과 분석', value: 'analytical' }
+                ]
+            },
+            {
+                type: 'visual',
+                question: '당신의 디지털 오라 색깔은?',
+                options: [
+                    { text: '🟣 보라색 - 신비로움', value: 'purple' },
+                    { text: '🔵 파란색 - 차분함', value: 'blue' },
+                    { text: '🟡 노란색 - 활력', value: 'yellow' },
+                    { text: '🟢 초록색 - 성장', value: 'green' }
+                ]
+            },
+            {
+                type: 'story',
+                story: '디지털 세계에서 위기가 발생했습니다. 바이러스가 퍼지고 있어요!',
+                question: '당신의 대처법은?',
+                options: [
+                    { text: '즉시 백신 프로그램 개발', value: 'solver' },
+                    { text: '안전한 곳으로 다른 사용자들 대피', value: 'protector' },
+                    { text: '바이러스의 패턴을 분석하여 원인 파악', value: 'analyst' },
+                    { text: '창의적인 방법으로 바이러스와 소통 시도', value: 'innovator' }
+                ]
+            },
+            {
+                type: 'choice',
+                question: '가장 선호하는 디지털 활동은?',
+                options: [
+                    { text: '온라인 게임에서 팀 리딩', value: 'leader' },
+                    { text: 'AI 아트 창작하기', value: 'artist' },
+                    { text: '커뮤니티에서 사람들 도와주기', value: 'helper' },
+                    { text: '새로운 기술 탐구하기', value: 'explorer' }
+                ]
+            },
+            {
+                type: 'final',
+                question: '디지털 세계에서 가장 중요한 것은?',
+                options: [
+                    { text: '연결과 소통', value: 'connection' },
+                    { text: '자유와 창의성', value: 'freedom' },
+                    { text: '안전과 신뢰', value: 'security' },
+                    { text: '발전과 혁신', value: 'innovation' }
+                ]
+            }
+        ];
+
+        // 결과 데이터
+        const results = {
+            'cyber_fox': {
+                emoji: '🦊',
+                title: '사이버 폭스',
+                description: '당신은 디지털 세계의 영리한 탐험가입니다. 빠른 적응력과 호기심으로 새로운 트렌드를 선도하며, 네트워크 속을 자유롭게 누비는 당신은 정보의 수집가이자 전달자입니다.',
+                traits: ['트렌드세터', '호기심 많음', '적응력 강함', '네트워킹 마스터']
+            },
+            'neon_wolf': {
+                emoji: '🐺',
+                title: '네온 울프',
+                description: '강한 리더십과 보호 본능을 가진 디지털 수호자입니다. 커뮤니티를 이끌고 약자를 보호하며, 정의로운 디지털 세계를 만들어가는 당신은 믿음직한 존재입니다.',
+                traits: ['리더십', '보호본능', '충성심', '정의로움']
+            },
+            'pixel_cat': {
+                emoji: '🐱',
+                title: '픽셀 캣',
+                description: '독립적이면서도 매력적인 디지털 아티스트입니다. 창의성과 미적 감각으로 가상 세계를 아름답게 만들며, 자신만의 공간에서 영감을 창조합니다.',
+                traits: ['창의적', '독립적', '예술적', '신비로움']
+            },
+            'quantum_owl': {
+                emoji: '🦉',
+                title: '퀀텀 아울',
+                description: '지혜와 통찰력을 갖춘 디지털 현자입니다. 복잡한 데이터 속에서 패턴을 발견하고, 깊은 분석으로 문제를 해결하는 당신은 디지털 세계의 조언자입니다.',
+                traits: ['지혜로움', '분석적', '통찰력', '멘토']
+            },
+            'hologram_butterfly': {
+                emoji: '🦋',
+                title: '홀로그램 나비',
+                description: '변화와 성장을 상징하는 디지털 혁신가입니다. 아름다움과 기능성을 결합하여 새로운 경험을 창조하며, 긍정적인 에너지로 주변을 밝힙니다.',
+                traits: ['혁신적', '긍정적', '변화추구', '영감을 줌']
+            },
+            'cyber_dragon': {
+                emoji: '🐉',
+                title: '사이버 드래곤',
+                description: '강력한 존재감과 카리스마를 가진 디지털 제왕입니다. 도전을 두려워하지 않고 큰 목표를 향해 나아가며, 열정적인 에너지로 불가능을 가능하게 만듭니다.',
+                traits: ['카리스마', '도전적', '열정적', '영향력']
+            },
+            'data_dolphin': {
+                emoji: '🐬',
+                title: '데이터 돌핀',
+                description: '소통과 공감의 마스터인 디지털 커뮤니케이터입니다. 정보의 바다를 유영하며 사람들을 연결하고, 즐거움과 지식을 동시에 전달합니다.',
+                traits: ['소통능력', '공감력', '유쾌함', '지식전달']
+            },
+            'matrix_rabbit': {
+                emoji: '🐰',
+                title: '매트릭스 래빗',
+                description: '빠르고 민첩한 디지털 해결사입니다. 복잡한 시스템의 숨은 통로를 찾아내고, 창의적인 방법으로 문제를 해결하는 당신은 디지털 세계의 마법사입니다.',
+                traits: ['민첩함', '문제해결', '창의적', '모험심']
+            }
+        };
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('question-container');
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+
+            let html = '<div class="question-container">';
+
+            if (question.story) {
+                html += `<p class="story-text">${question.story}</p>`;
+            }
+
+            html += `<h2 class="question">${question.question}</h2>`;
+            html += '<div class="options">';
+
+            question.options.forEach((option, index) => {
+                const optionClass = question.type === 'visual' ? 'option visual-option' : 'option';
+                html += `<div class="${optionClass}" onclick="selectAnswer('${option.value}')">${option.text}</div>`;
+            });
+
+            html += '</div></div>';
+            container.innerHTML = html;
+        }
+
+        function selectAnswer(value) {
+            answers.push(value);
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function calculateResult() {
+            // 간단한 로직으로 결과 계산
+            const resultKeys = Object.keys(results);
+            const hash = answers.join('').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return resultKeys[hash % resultKeys.length];
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('loading-screen').classList.add('active');
+
+            setTimeout(() => {
+                const resultKey = calculateResult();
+                const result = results[resultKey];
+
+                document.getElementById('loading-screen').classList.remove('active');
+                document.getElementById('result-screen').classList.add('active');
+
+                document.getElementById('result-emoji').textContent = result.emoji;
+                document.getElementById('result-title').textContent = result.title;
+                document.getElementById('result-description').textContent = result.description;
+
+                const traitsHtml = result.traits.map(trait => `<span class="trait">${trait}</span>`).join('');
+                document.getElementById('result-traits').innerHTML = traitsHtml;
+            }, 2000);
+        }
+
+        function shareResult() {
+            alert('공유 기능이 활성화되었습니다! (실제 구현시 SNS 공유 API 연동)');
+        }
+
+        function retakeQuiz() {
+            currentQuestion = 0;
+            answers = [];
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
